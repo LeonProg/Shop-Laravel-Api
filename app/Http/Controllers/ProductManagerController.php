@@ -7,6 +7,7 @@ use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
 class ProductManagerController extends Controller
@@ -14,9 +15,10 @@ class ProductManagerController extends Controller
      /**
      * Add product
      * 
+     * @param ProductRequest $request
      * @return Response
      */
-    public function store(ProductRequest $request)
+    public function store(ProductRequest $request) : Response
     {
         $addProduct = Product::query()->create($request->validated());
 
@@ -35,13 +37,14 @@ class ProductManagerController extends Controller
     /**
      * Update product
      * 
-     * 
+     * @param Product $product, ProductUpdateRequest $request
+     * @return Response
     */
-    public function update(Product $product, ProductUpdateRequest $request) 
+    public function update(Product $product, ProductUpdateRequest $request) : Response
     {
         $product->update($request->validated());
 
-        return $product;
+        return response()->noContent();
 
     }
 

@@ -22,16 +22,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/registration', [AuthController::class, 'registration']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/product', [ProductController::class, 'show']);
+Route::get('/products', [ProductController::class, 'show']);
+Route::get('/products/{product}', [ProductController::class, 'getOne']);
 
 Route::middleware('auth:sanctum')->group(function() {
   Route::get('/profile', [UserController::class, 'profile']);
   Route::patch('/profile', [UserController::class, 'update']);
   Route::delete('/logout', [AuthController::class, 'logout']);  
 
+  Route::post('/products/{product}/comment', [ProductController::class, 'addComment']);
+  Route::get('/products/{product}/comment', [ProductController::class, 'getComments']);
+
   Route::middleware('admin')->group(function() {
-    Route::post('/product', [ProductManagerController::class, 'store']);
-    Route::delete('/product/{product}', [ProductManagerController::class, 'delete']);
-    Route::patch('/product/{product}', [ProductManagerController::class, 'update']);
+    Route::post('/products', [ProductManagerController::class, 'store']);
+    Route::delete('/products/{product}', [ProductManagerController::class, 'delete']);
+    Route::patch('/products/{product}', [ProductManagerController::class, 'update']);
   });
+
 });

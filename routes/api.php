@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductManagerController;
@@ -32,6 +33,10 @@ Route::middleware('auth:sanctum')->group(function() {
 
   Route::post('/products/{product}/comment', [ProductController::class, 'addComment']);
   Route::get('/products/{product}/comment', [ProductController::class, 'getComments']);
+
+  Route::get('/cart', [CartController::class, 'show']);
+  Route::post('/cart/{product}', [CartController::class, 'add']);
+  Route::delete('/cart/{cart}', [CartController::class, 'delete']);
 
   Route::middleware('admin')->group(function() {
     Route::post('/products', [ProductManagerController::class, 'store']);

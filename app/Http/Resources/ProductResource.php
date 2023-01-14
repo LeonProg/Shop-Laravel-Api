@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'quantity' => $this->quantity,
             'rating' => $this->rating,
+            'price' => $this->price,
             // 'images_path' => ($this->productImages()->get('image_path')),
             'image_url' => array_map(function($n) {
                 $array = [];

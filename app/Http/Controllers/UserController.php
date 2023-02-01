@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     /**
      * get user profile
-     * 
+     *
      * @return array
      */
     public function profile() : array
@@ -21,21 +21,21 @@ class UserController extends Controller
         $user = $this->user();
 
         return [
-            'id' => $user->id, 
-            'name' => $user->name, 
+            'id' => $user->id,
+            'name' => $user->name,
             'email' => $user->email,
         ];
     }
 
     /**
-     * 
+     *
      * @param ProfileRequest $request
-     * @return 
+     * @return
      */
-    public function update(ProfileRequest $request) 
+    public function update(ProfileRequest $request)
     {
-        $password = $request->get('password') 
-        ? Hash::make($request->get('password')) 
+        $password = $request->get('password')
+        ? Hash::make($request->get('password'))
         : $this->user()->password;
 
         $this->user()->update(['password' => $password] + $request->validated());
@@ -44,7 +44,7 @@ class UserController extends Controller
 
     /**
      * Get auth user
-     * 
+     *
      * @return Authenticatable|null
      */
     private function user() : Authenticatable|null

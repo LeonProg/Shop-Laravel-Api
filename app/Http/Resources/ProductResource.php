@@ -24,10 +24,10 @@ class ProductResource extends JsonResource
             'rating' => $this->rating,
             'price' => $this->price,
             // 'images_path' => ($this->productImages()->get('image_path')),
-            'image_url' => array_map(function($n) {
+            'image_url' => array_map(function($images) {
                 $array = [];
-                foreach($n as $item) {
-                    array_push($array, $item['image_url']);
+                foreach($images as $image) {
+                    $array[] = $image['image_url'];
                 }
                 return $array;
 

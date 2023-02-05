@@ -13,25 +13,29 @@ class ProductResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+
     public function toArray($request)
     {
+        $ratings = $this->ratings()->get("rating");
+        $array = [];
+
+        foreach ($ratings as $rating)
+        {
+            $array[] = $rating['rating'];
+        }
+        $sum = array_sum($array);
+
+        $result = ($sum > 0 ) ?  round($sum / $this->ratings()->count(), PHP_ROUND_HALF_UP) : 0;
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->status,
             'quantity' => $this->quantity,
-            'rating' => $this->rating,
             'price' => $this->price,
-            // 'images_path' => ($this->productImages()->get('image_path')),
-            'image_url' => array_map(function($images) {
-                $array = [];
-                foreach($images as $image) {
-                    $array[] = $image['image_url'];
-                }
-                return $array;
-
-            },[$this->productImages()->get('image_path')]),
+            'image_url' => ImageResource::collection($this->productImages()->get("image_path")),
+            'rating' =>  $result,
         ];
     }
 }

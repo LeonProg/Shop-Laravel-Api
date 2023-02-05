@@ -12,21 +12,17 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductManagerController extends Controller
 {
-     /**
-     * Add product
-     * 
-     * @param ProductRequest $request
-     * @return Response
-     */
-    public function store(ProductRequest $request) : Response
+
+    public function store(ProductRequest $request): Response
     {
         $addProduct = Product::query()->create($request->validated());
+        $productImage = new ProductImage();
 
         if ($request->hasFile('image_file')) {
             foreach ($request->file('image_file') as $image) {
                 ProductImage::query()->create([
                     'product_id' => $addProduct->id,
-                    'image_path' => $image->store('public/images')
+                    'image_path' => ProductImage::uploadImage($image),
                 ]);
             }
         }
@@ -36,7 +32,7 @@ class ProductManagerController extends Controller
 
     /**
      * Update product
-     * 
+     *
      * @param Product $product, ProductUpdateRequest $request
      * @return Response
     */
@@ -50,7 +46,7 @@ class ProductManagerController extends Controller
 
     /**
      * Delete product
-     * 
+     *
      * @param Product $product
      * @return Response
      */

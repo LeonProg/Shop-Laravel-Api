@@ -5,34 +5,43 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\ProductImage;
+use Illuminate\Support\Facades\Auth;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'category_id',
         'name',
         'description',
         'price',
         'status',
         'quantity',
-        'rating'
     ];
 
     /**
      * Get product images
-     * 
+     *
      * @return HasMany
      */
-    public function productImages() : HasMany
+    public  function productImages() : HasMany
     {
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
 
-    public function comments() 
+    public function comments() : HasMany
     {
         return $this->hasMany(Comment::class, 'product_id', 'id');
     }
+
+    public function ratings() : HasMany
+    {
+        return $this->hasMany(Rating::class, 'product_id', 'id');
+    }
+
+    public function hasRating() : bool
+    {
+        return $this->ratings()->where("user_id", Auth::id())->exists();
+    }
+
 }

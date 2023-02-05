@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
+use App\Http\Requests\RatingRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Comment;
 use App\Models\Product;
+use App\Models\Rating;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +20,7 @@ class ProductController extends Controller
      *
      * @return AnonymousResourceCollection
      */
-    public function show() : AnonymousResourceCollection
+    public function show()
     {
         return ProductResource::collection(Product::all());
     }
@@ -60,6 +62,23 @@ class ProductController extends Controller
         ];
 
         $comment = Comment::query()->create($data + $request->validated());
+
+        return response()->noContent();
+    }
+
+    public function setRating(Product $product, RatingRequest $request)
+    {
+        if (!$product->hasRating()) {
+            $product->ratings()->create([
+                'user_id' => Auth::id(),
+            ] + $request->validated());
+
+            return response()->noContent();
+        }
+
+        $product->ratings()->update([
+                'user_id' => Auth::id(),
+        ] + $request->validated());
 
         return response()->noContent();
     }

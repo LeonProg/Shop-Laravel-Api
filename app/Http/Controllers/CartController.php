@@ -5,42 +5,36 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    /**
-     * Add to cart
-     * 
-     * @param Product $product
-     * @return JsonResponse
-     */
-    public function add(Product $product) : JsonResponse
+
+    public function add(Product $product)
     {
-        $user = Auth::user();
+        $user = Auth::user()->hasCartProduct($product->id);
 
-        $items = $user->cart;
+        if (!$user)
+        {
+            Auth::user()->cart()->create([
+                'product_id' => $product->id,
+                'count' => 1,
+            ]);
 
-        // if ($items->has($product->id)) {
-        //     return response()->Json([
-        //         'success' => false,
-        //         'message' => 'This product cannot be added to the cart because it is already there',
-        //     ]);;
-        // } 
-
-        $user->cart()->create([
-            'product_id' => $product->id,
+            return response()->Json([
+                'success' => true
+            ], 201);
+        }
+        return  response()->json([
+            'message' => 'Product already added'
         ]);
-
-        return response()->Json([
-            'success' => true
-        ], 201);
     }
 
     /**
      * Get cart
-     * 
+     *
      * @return JsonResponse
      */
     public function show() : JsonResponse
@@ -60,10 +54,10 @@ class CartController extends Controller
 
     /**
      * Delete from cart
-     * 
+     *
      * @param Cart $cart
      */
-    public function delete(Cart $cart) 
+    public function delete(Cart $cart)
     {
         if (Auth::id() !== $cart->user_id) {
             return response()->json([
@@ -73,7 +67,7 @@ class CartController extends Controller
                 ],
             ], 403);
         }
-        
+
         $cart->delete();
 
         return response()->json([

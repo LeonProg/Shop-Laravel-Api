@@ -37,22 +37,21 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    /**
      * User cart
-     * 
+     *
      * @return HasMany
      */
-    public function cart() : HasMany 
+    public function cart() : HasMany
     {
         return $this->hasMany(Cart::class, 'user_id', 'id');
     }
+
+    public function hasCartProduct($id) : bool
+    {
+        return $this->cart()->where('product_id', $id)->exists();
+    }
+
+
+
 
 }

@@ -2,18 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Cart;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cart>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Rating>
  */
-class CartFactory extends Factory
+class RatingFactory extends Factory
 {
-    protected $model = Cart::class;
-
     /**
      * Define the model's default state.
      *
@@ -22,9 +19,9 @@ class CartFactory extends Factory
     public function definition()
     {
         return [
-            "user_id" => User::get()->random()->id,
             "product_id" => Product::get()->random()->id,
-            "count" => rand(1,10),
+            "user_id" => User::get()->random()->id,
+            "rating" => rand(1,5),
         ];
     }
 }

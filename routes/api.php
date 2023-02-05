@@ -21,27 +21,48 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/registration', [AuthController::class, 'registration']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/products', [ProductController::class, 'show']);
-Route::get('/products/{product}', [ProductController::class, 'getOne']);
+
+
+
 
 Route::middleware('auth:sanctum')->group(function() {
-  Route::get('/profile', [UserController::class, 'profile']);
-  Route::patch('/profile', [UserController::class, 'update']);
-  Route::delete('/logout', [AuthController::class, 'logout']);  
 
-  Route::post('/products/{product}/comment', [ProductController::class, 'addComment']);
-  Route::get('/products/{product}/comment', [ProductController::class, 'getComments']);
+    Route::controller(UserController::class)->group(function (){
+        Route::get('/profile', 'profile');
+        Route::patch('/profile', 'update');
+    });
 
-  Route::get('/cart', [CartController::class, 'show']);
-  Route::post('/cart/{product}', [CartController::class, 'add']);
-  Route::delete('/cart/{cart}', [CartController::class, 'delete']);
+    Route::delete('/logout', [AuthController::class, 'logout']);
 
-  Route::middleware('admin')->group(function() {
-    Route::post('/products', [ProductManagerController::class, 'store']);
-    Route::delete('/products/{product}', [ProductManagerController::class, 'delete']);
-    Route::patch('/products/{product}', [ProductManagerController::class, 'update']);
-  });
+    Route::controller(ProductController::class)->group(function () {
+        Route::post('/products/{product}/comment',  'addComment');
+        Route::get('/products/{product}/comment',  'getComments');
+        Route::post('/products/{product}/rating', 'setRating');
+    });
 
+
+    Route::get('/cart', [CartController::class, 'show']);
+    Route::post('/cart/{product}', [CartController::class, 'add']);
+    Route::delete('/cart/{cart}', [CartController::class, 'delete']);
+
+    Route::middleware('admin')->group(function() {
+        Route::controller(ProductManagerController::class)->group(function () {
+            Route::post('/products', 'store');
+            Route::delete('/products/{product}', 'delete');
+            Route::patch('/products/{product}', 'update');
+        });
+
+
+    });
+
+});
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/registration', 'registration');
+    Route::post('/login', 'login');
+});
+
+Route::controller(ProductController::class)->group(function () {
+    Route::get('/products', 'show');
+    Route::get('/products/{product}', 'getOne');
 });

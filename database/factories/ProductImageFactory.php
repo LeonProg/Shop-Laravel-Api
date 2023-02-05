@@ -23,7 +23,6 @@ class ProductImageFactory extends Factory
         return [
             "product_id" => Product::get()->random()->id,
             "image_path" => fake()->imageUrl(),
-
         ];
     }
 }

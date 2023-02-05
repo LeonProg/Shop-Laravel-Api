@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class ProductRequest extends FormRequest
 {
@@ -19,7 +20,7 @@ class ProductRequest extends FormRequest
             'price' => 'required',
             'status' => 'required',
             'quantity' => 'required',
-            'image_file' => 'required'
+            'image_file[]' => 'mimes:jpg,png,jpeg',
         ];
     }
 }

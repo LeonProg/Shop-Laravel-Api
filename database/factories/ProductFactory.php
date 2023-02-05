@@ -20,11 +20,10 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->title(),
+            'name' => fake()->city(),
             'description' => fake()->text(),
             'status' => 'publish',
             'price' => rand(2000, 2550),
-            'rating' => rand(0, 10),
         ];
     }
 }

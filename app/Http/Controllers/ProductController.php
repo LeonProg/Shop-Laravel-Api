@@ -9,6 +9,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Comment;
 use App\Models\Product;
 use App\Models\Rating;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +21,59 @@ class ProductController extends Controller
      *
      * @return AnonymousResourceCollection
      */
-    public function show()
+    public function show(Request $request)
     {
-        return ProductResource::collection(Product::all());
+        $product = ProductResource::collection(Product::query()->select(['id', 'name', 'quantity', 'price', 'category_id'])->paginate(12))->withQueryString();
+
+//       Refactoring !!!!!
+
+        if ($request->has('category_id') || $request->has('sortByDESC') || $request->has('sortByASC')) {
+
+            if ($request->has('category_id') && $request->has('sortByDESC')) {
+
+                return ProductResource::collection(Product::query()
+                    ->select(['id', 'name', 'quantity', 'price', 'category_id'])
+                    ->where('category_id', $request->category_id)
+                    ->orderBy($request->sortByDESC, 'DESC')
+                    ->paginate(12))
+                    ->withQueryString();
+            }
+
+            if ($request->has('category_id') && $request->has('sortByASC')) {
+                return ProductResource::collection(Product::query()
+                    ->select(['id', 'name', 'quantity', 'price', 'category_id'])
+                    ->where('category_id', $request->category_id)
+                    ->orderBy($request->sortByASC, 'ASC')
+                    ->paginate(12))
+                    ->withQueryString();
+            }
+
+            if ($request->has('category_id')) {
+                return ProductResource::collection(Product::query()
+                    ->select(['id', 'name', 'quantity', 'price', 'category_id'])
+                    ->where('category_id', $request->category_id)
+                    ->paginate(12))
+                    ->withQueryString();
+            }
+
+            if ($request->has('sortByDESC')) {
+                return ProductResource::collection(Product::query()
+                    ->select(['id', 'name', 'quantity', 'price', 'category_id'])
+                    ->orderBy($request->sortByDESC, 'DESC')
+                    ->paginate(12))
+                    ->withQueryString();
+            }
+
+            if ($request->has('sortByASC')) {
+                return ProductResource::collection(Product::query()
+                    ->select(['id', 'name', 'quantity', 'price', 'category_id'])
+                    ->orderBy($request->sortByASC, 'ASC')
+                    ->paginate(12))
+                    ->withQueryString();
+            }
+        }
+
+        return $product;
     }
 
     /**
@@ -54,7 +105,7 @@ class ProductController extends Controller
      * @param CommentRequest request
      * @return Response
      */
-    public function addComment(Product $product, CommentRequest $request) : Response
+    public function addComment(Product $product, CommentRequest $request): Response
     {
         $data = [
             'user_id' => Auth::user()->id,
@@ -70,15 +121,15 @@ class ProductController extends Controller
     {
         if (!$product->hasRating()) {
             $product->ratings()->create([
-                'user_id' => Auth::id(),
-            ] + $request->validated());
+                    'user_id' => Auth::id(),
+                ] + $request->validated());
 
             return response()->noContent();
         }
 
         $product->ratings()->update([
                 'user_id' => Auth::id(),
-        ] + $request->validated());
+            ] + $request->validated());
 
         return response()->noContent();
     }

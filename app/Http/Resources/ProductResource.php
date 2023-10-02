@@ -29,13 +29,12 @@ class ProductResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'status' => $this->status,
+            'title' => $this->name,
             'quantity' => $this->quantity,
             'price' => $this->price,
             'image_url' => ImageResource::collection($this->productImages()->get("image_path")),
             'rating' =>  $result,
+            'category_id' => $this->category_id,
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -21,10 +22,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::factory(15)->create();
-        Product::factory(5)->create();
+        Category::factory(10)->create();
+        Product::factory(20)->create();
         ProductImage::factory(25)->create();
         Comment::factory(5)->create();
         Cart::factory(15)->create();
-        Rating::factory(100)->create();
+        Rating::factory(50)->create();
     }
 }
